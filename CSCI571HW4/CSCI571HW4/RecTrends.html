@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+        <SCRIPT LANGUAGE="JavaScript">
+            function setData(jsonData) {
+                var data = jsonData;
+                //array for each rec
+                var per = [];
+                var strongSell = [];
+                var sell = [];
+                var hold = [];
+                var buy = [];
+                var strongBuy = [];
+                //populate arrays
+                for (const rec of data) {
+                    per.push(rec.period);
+                    strongSell.push(rec.strongSell);
+                    sell.push(rec.sell);
+                    hold.push(rec.hold);
+                    buy.push(rec.buy);
+                    strongBuy.push(rec.strongBuy);
+                }
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'column',
+                    },
+                    title: {
+                        text: 'Recommendation Trends',
+                        align: 'center',
+                    },
+                    xAxis: {
+                        categories: per,
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '# Analysis',
+                        },
+                        stackLabels: {
+                            enabled: false,
+                        },
+                    },
+                    legend: {
+                        align: 'left',
+                        x: 70,
+                        verticalAlign: 'bottom',
+                        y: 0,
+                        floating: false,
+                        borderColor: 'none',
+                        borderWidth: 1,
+                        shadow: false,
+                    },
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat:
+                            '{series.name}: {point.y}<br/>Total: {point.stackTotal}',
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'normal',
+                            dataLabels: {
+                                enabled: true,
+                            },
+                            colors: ['#7B241C', '#E74C3C', '#B9770E', '#2ECC71', '#196F3D'],
+                        },
+                    },
+                    series: [
+                        {
+                            name: 'Strong Buy',
+                            data: strongBuy,
+                            color: '#196F3D',
+                        },
+                        {
+                            name: 'Buy',
+                            data: buy,
+                            color: '#2ECC71',
+                        },
+                        {
+                            name: 'Hold',
+                            data: hold,
+                            color: '#B9770E',
+                        },
+                        {
+                            name: 'Sell',
+                            data: sell,
+                            color: '#E74C3C',
+                        },
+                        {
+                            name: 'Strong Sell',
+                            data: strongSell,
+                            color: '#7B241C',
+                        },
+                    ]
+                });
+            }
+        </SCRIPT>
+    
+</head>
+
+<body>
+    <!--
+    <h1>this should be bigger</h1>
+    <p>we can display</p>
+    -->
+    <div id="container" style="height: 800px;"></div>
+</body>
+
+</html>

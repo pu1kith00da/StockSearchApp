@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <SCRIPT LANGUAGE="JavaScript">
+
+        function setData(jsonData) {
+            var data = jsonData;
+
+            //array for data
+            var periods = [];
+            var actual = [];
+            var estimate = [];
+            var surprise = [];
+
+            //populate array
+            for (const rec of data) {
+                periods.push(rec.period);
+                actual.push(rec.actual);
+                estimate.push(rec.estimate);
+                surprise.push(rec.surprise);
+            }
+            Highcharts.chart('container', {
+                chart: {
+                            type: 'spline',
+                        },
+                        title: {
+                            text: 'Historical EPS Surprises',
+                        },
+                        xAxis: {
+                            categories: periods,
+                            labels: {
+                                formatter: function () {
+                                    const index = this.pos;
+                                    const period = periods[index];
+                                    const surpriseData = surprise[index];
+
+                                    // Construct the label with period and surprise
+                                    return period + '<br/>' + 'Surprise: ' + surpriseData;
+                                },
+                            },
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Quarterly EPS',
+                            },
+                            labels: {
+                                format: '{value}',
+                            },
+                        },
+                        tooltip: {
+                            crosshairs: true,
+                            shared: true,
+                        },
+                        plotOptions: {
+                            spline: {
+                                marker: {
+                                    radius: 4,
+                                    lineColor: '#666666',
+                                    lineWidth: 1,
+                                },
+                            },
+                        },
+                        series: [
+                            {
+                                name: 'Actual',
+                                marker: {
+                                    symbol: 'circle',
+                                },
+                                data: actual,
+                            },
+                            {
+                                name: 'Estimate',
+                                marker: {
+                                    symbol: 'diamond',
+                                },
+                                data: estimate,
+                            },
+                        ]
+            });
+        }
+    </SCRIPT>
+
+</head>
+
+<body>
+    <div id="container" style="height: 900px;"></div>
+</body>
+
+</html>

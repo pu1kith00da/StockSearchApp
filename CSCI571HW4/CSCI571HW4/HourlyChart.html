@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <SCRIPT LANGUAGE="JavaScript">
+
+        function formatTimeSummary(timestamp) {
+            const date = new Date(timestamp);
+            const hours = date.getUTCHours();
+            const minutes = date.getUTCMinutes();
+            const formattedHours = hours < 10 ? `0${hours}` : hours;
+            const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+            return `${formattedHours}:${formattedMinutes}`;
+        }
+
+        function setData(jsonData, ticker) {
+            var data = jsonData;
+            const hour = data.hour;
+            const price = data.hourlyStockPrice;
+            var color = 'red';
+
+            const convertedTime = hour.map(timestamp => this.formatTimeSummary(timestamp));
+            const points = convertedTime.map((time, index) => [convertedTime[index], price[index]]);
+            const priceLength = price.length;
+
+            if (price[priceLength - 1] - price[0] >= 0) {
+                color = 'green';
+            }
+
+            Highcharts.chart('container', {
+                title: {
+                    text: ticker + ' Hourly Price Variation',
+                    align: 'center',
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'Price',
+                    },
+                },
+                xAxis: {
+                    categories: convertedTime,//this.hourlyStockPrice.hour,
+                    title: {
+                        text: 'Time',
+                    },
+                },
+                series: [
+                    {
+                        data: points,//this.hourlyStockPrice.hourlyStockPrice,
+                        name: 'Stock Price',
+                        color: color,
+                    },
+                ],
+
+                responsive: {
+                    rules: [
+                        {
+                            condition: {
+                                maxWidth: 500,
+                            },
+                            chartOptions: {
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                },
+                            },
+                        },
+                    ],
+                }
+            });
+        }
+    </SCRIPT>
+
+</head>
+
+<body>
+    <div id="container" style="height: 900px;"></div>
+</body>
+
+</html>
